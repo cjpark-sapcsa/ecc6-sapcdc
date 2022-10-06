@@ -1,0 +1,29 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "SAPECC_FI_AR",
+						"type": "DatasetReference"
+					},
+					"name": "source1"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     limit: 100,",
+				"     staged: true,",
+				"     enableCdc: true,",
+				"     readMode: 'fullAndIncrementalLoad',",
+				"     keys:['BUKRS','FISCPER','BELNR','BUZEI','UPOSZ'],",
+				"     format: 'sapObject') ~> source1"
+			]
+		}
+	}
+}
