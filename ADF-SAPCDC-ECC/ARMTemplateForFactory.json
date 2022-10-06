@@ -1,0 +1,243 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "ADF-SAPCDC-ECC"
+		},
+		"SAPCDC2ECC6_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SAPCDC2ECC6'"
+		},
+		"adls4sapecc_accountKey": {
+			"type": "secureString",
+			"metadata": "Secure string for 'accountKey' of 'adls4sapecc'"
+		},
+		"SAPCDC2ECC6_properties_typeProperties_clientId": {
+			"type": "string",
+			"defaultValue": "100"
+		},
+		"SAPCDC2ECC6_properties_typeProperties_userName": {
+			"type": "string",
+			"defaultValue": "10steps2s4"
+		},
+		"SAPCDC2ECC6_properties_typeProperties_server": {
+			"type": "string",
+			"defaultValue": "20.16.15.220"
+		},
+		"SAPCDC2ECC6_properties_typeProperties_systemNumber": {
+			"type": "string",
+			"defaultValue": "00"
+		},
+		"adls4sapecc_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://sapeccqas2adf.dfs.core.windows.net/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Data flow1",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflowFIAR",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"source1": {},
+									"sink1": {}
+								}
+							},
+							"staging": {
+								"linkedService": {
+									"referenceName": "adls4sapecc",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "demo"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine",
+							"continuationSettings": {
+								"customizedCheckpointKey": "5d5e03cf-3357-4de1-8c6a-44a76b971406"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflowFIAR')]",
+				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SAPECC_FI_AR')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SAPCDC2ECC6",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SapOdpResource",
+				"schema": [],
+				"typeProperties": {
+					"context": "SAPI",
+					"objectName": "0FI_AR_4"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SAPCDC2ECC6')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SAPCDC2ECC6')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "ECC6 - SLT - CDC",
+				"annotations": [],
+				"type": "SapOdp",
+				"typeProperties": {
+					"clientId": "[parameters('SAPCDC2ECC6_properties_typeProperties_clientId')]",
+					"language": "EN",
+					"sncMode": false,
+					"userName": "[parameters('SAPCDC2ECC6_properties_typeProperties_userName')]",
+					"subscriberName": "ECC2ADFviaCDC",
+					"password": {
+						"type": "SecureString",
+						"value": "[parameters('SAPCDC2ECC6_password')]"
+					},
+					"server": "[parameters('SAPCDC2ECC6_properties_typeProperties_server')]",
+					"systemNumber": "[parameters('SAPCDC2ECC6_properties_typeProperties_systemNumber')]"
+				},
+				"connectVia": {
+					"referenceName": "ecc6ehp6-Win2-IP",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/ecc6ehp6-Win2-IP')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/adls4sapecc')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "adls4sapecc datalake",
+				"annotations": [],
+				"type": "AzureBlobFS",
+				"typeProperties": {
+					"url": "[parameters('adls4sapecc_properties_typeProperties_url')]",
+					"accountKey": {
+						"type": "SecureString",
+						"value": "[parameters('adls4sapecc_accountKey')]"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ecc6ehp6-Win2-IP')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflowFIAR')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "SAPECC_FI_AR",
+								"type": "DatasetReference"
+							},
+							"name": "source1"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							},
+							"name": "sink1",
+							"rejectedDataLinkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     staged: true,",
+						"     enableCdc: true,",
+						"     readMode: 'fullAndIncrementalLoad',",
+						"     keys:['BUKRS','FISCPER','BELNR','BUZEI','UPOSZ'],",
+						"     format: 'sapObject') ~> source1",
+						"source1 sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'demo',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable:true,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> sink1"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SAPECC_FI_AR')]",
+				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
+			]
+		}
+	]
+}

@@ -1,0 +1,30 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "ADF-SAPCDC-ECC"
+		},
+		"SAPCDC2ECC6_password": {
+			"value": ""
+		},
+		"adls4sapecc_accountKey": {
+			"value": ""
+		},
+		"SAPCDC2ECC6_properties_typeProperties_clientId": {
+			"value": "100"
+		},
+		"SAPCDC2ECC6_properties_typeProperties_userName": {
+			"value": "10steps2s4"
+		},
+		"SAPCDC2ECC6_properties_typeProperties_server": {
+			"value": "20.16.15.220"
+		},
+		"SAPCDC2ECC6_properties_typeProperties_systemNumber": {
+			"value": "00"
+		},
+		"adls4sapecc_properties_typeProperties_url": {
+			"value": "https://sapeccqas2adf.dfs.core.windows.net/"
+		}
+	}
+}
