@@ -25,7 +25,7 @@
 		},
 		"SAPCDC2ECC6_properties_typeProperties_server": {
 			"type": "string",
-			"defaultValue": "20.16.15.220"
+			"defaultValue": "20.160.178.48"
 		},
 		"SAPCDC2ECC6_properties_typeProperties_systemNumber": {
 			"type": "string",
@@ -119,6 +119,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/VenderSalesFigures')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SAPCDC2ECC6",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SapOdpResource",
+				"schema": [],
+				"typeProperties": {
+					"context": "SAPI",
+					"objectName": "0FI_AP_6"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SAPCDC2ECC6')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SAPCDC2ECC6')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -177,6 +198,85 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/VenderSalesFigures')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "VenderSalesFigures",
+								"type": "DatasetReference"
+							},
+							"name": "VenderSalesFigures",
+							"description": "VenderSalesFigures"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							},
+							"name": "ADLSvendersales",
+							"rejectedDataLinkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          LIFNR as string,",
+						"          BUKRS as string,",
+						"          FISCPER as string,",
+						"          FISCVAR as string,",
+						"          CURTYPE as string,",
+						"          CURRENCY as string,",
+						"          UM01S as decimal(19,2),",
+						"          UM01H as decimal(19,2),",
+						"          UM01K as decimal(19,2),",
+						"          UM01U as decimal(19,2),",
+						"          UPDMOD as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     staged: true,",
+						"     enableCdc: true,",
+						"     readMode: 'fullAndIncrementalLoad',",
+						"     keys:['LIFNR'],",
+						"     format: 'sapObject',",
+						"     partitionBy('roundRobin', 2)) ~> VenderSalesFigures",
+						"VenderSalesFigures sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'demo',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable:true,",
+						"     insertable:false,",
+						"     updateable:true,",
+						"     upsertable:true,",
+						"     keys:['LIFNR'],",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> ADLSvendersales"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/VenderSalesFigures')]",
+				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/dataflowFIAR')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
@@ -223,9 +323,10 @@
 						"     optimizedWrite: false,",
 						"     vacuum: 0,",
 						"     deletable:true,",
-						"     insertable:true,",
+						"     insertable:false,",
 						"     updateable:false,",
 						"     upsertable:true,",
+						"     keys:['BELNR'],",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
@@ -236,6 +337,63 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SAPECC_FI_AR')]",
+				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/vendersalesfigures')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Vendersalesfigures",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "VenderSalesFigures",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"VenderSalesFigures": {},
+									"ADLSvendersales": {}
+								}
+							},
+							"staging": {
+								"linkedService": {
+									"referenceName": "adls4sapecc",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "demo"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine",
+							"continuationSettings": {
+								"customizedCheckpointKey": "d3c6fdb8-430c-4d17-a472-b7d93ee28226"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/VenderSalesFigures')]",
 				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
 			]
 		}
