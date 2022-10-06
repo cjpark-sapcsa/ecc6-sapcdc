@@ -1,5 +1,5 @@
 {
-	"name": "dataflow1",
+	"name": "dataflowFIAR",
 	"properties": {
 		"type": "MappingDataFlow",
 		"typeProperties": {
@@ -17,7 +17,6 @@
 			"scriptLines": [
 				"source(allowSchemaDrift: true,",
 				"     validateSchema: false,",
-				"     limit: 100,",
 				"     staged: true,",
 				"     enableCdc: true,",
 				"     readMode: 'fullAndIncrementalLoad',",
