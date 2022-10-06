@@ -24,7 +24,7 @@
 							"referenceName": "adls4sapecc",
 							"type": "LinkedServiceReference"
 						},
-						"folderPath": "demo"
+						"folderPath": "demo/staging"
 					},
 					"compute": {
 						"coreCount": 8,
