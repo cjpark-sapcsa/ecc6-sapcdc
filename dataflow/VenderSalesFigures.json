@@ -13,7 +13,15 @@
 					"description": "VenderSalesFigures"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "adls4sapecc",
+						"type": "LinkedServiceReference"
+					},
+					"name": "ADLSvendersales"
+				}
+			],
 			"transformations": [],
 			"scriptLines": [
 				"source(output(",
@@ -36,7 +44,26 @@
 				"     readMode: 'fullAndIncrementalLoad',",
 				"     keys:['LIFNR'],",
 				"     format: 'sapObject',",
-				"     partitionBy('roundRobin', 2)) ~> VenderSalesFigures"
+				"     partitionBy('roundRobin', 2)) ~> VenderSalesFigures",
+				"VenderSalesFigures sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'demo',",
+				"     folderPath: 'vendor',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable:true,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:true,",
+				"     keys:['LIFNR'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> ADLSvendersales"
 			]
 		}
 	}
