@@ -19,7 +19,11 @@
 						"referenceName": "adls4sapecc",
 						"type": "LinkedServiceReference"
 					},
-					"name": "ADLSvendersales"
+					"name": "ADLSvendersales",
+					"rejectedDataLinkedService": {
+						"referenceName": "adls4sapecc",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [],
