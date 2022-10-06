@@ -1,0 +1,28 @@
+{
+	"name": "VenderSalesFigures",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "VenderSalesFigures",
+						"type": "DatasetReference"
+					},
+					"name": "VenderSalesFigures",
+					"description": "VenderSalesFigures"
+				}
+			],
+			"sinks": [],
+			"transformations": [],
+			"scriptLines": [
+				"source(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     staged: true,",
+				"     enableCdc: true,",
+				"     readMode: 'fullAndIncrementalLoad',",
+				"     format: 'sapObject') ~> VenderSalesFigures"
+			]
+		}
+	}
+}
