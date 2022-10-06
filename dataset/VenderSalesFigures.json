@@ -1,0 +1,16 @@
+{
+	"name": "VenderSalesFigures",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SAPCDC2ECC6",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SapOdpResource",
+		"schema": [],
+		"typeProperties": {
+			"context": "SAPI",
+			"objectName": "0FI_AP_6"
+		}
+	}
+}
