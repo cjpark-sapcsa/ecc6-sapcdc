@@ -1,0 +1,16 @@
+{
+	"name": "SAPECC_FI_AR",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SAPCDC2ECC6",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SapOdpResource",
+		"schema": [],
+		"typeProperties": {
+			"context": "SAPI",
+			"objectName": "0FI_AR_4"
+		}
+	}
+}
