@@ -10,9 +10,10 @@
 			"language": "EN",
 			"sncMode": false,
 			"userName": "10steps2s4",
+			"subscriberName": "ECC2ADFviaCDC",
 			"server": "20.16.15.220",
 			"systemNumber": "00",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3NWQyMzZkNy1kMTg4LTQyNzctOTJmYS1lNDNjYzc2Yzk5YzciLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiJjYmZmZmRkMy1mNjk1LTQwN2UtODc5Ny1hODRlOTI0ZDBiZGQiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "ecc6ehp6-Win2-IP",
