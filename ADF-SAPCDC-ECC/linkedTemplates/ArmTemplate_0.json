@@ -189,7 +189,7 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Data flow1",
+						"name": "copyFIAR2ADLS",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
