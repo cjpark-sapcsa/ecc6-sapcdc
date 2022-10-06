@@ -53,7 +53,6 @@
 				"     validateSchema: false,",
 				"     format: 'delta',",
 				"     fileSystem: 'demo',",
-				"     folderPath: 'vendor',",
 				"     mergeSchema: false,",
 				"     autoCompact: false,",
 				"     optimizedWrite: false,",
