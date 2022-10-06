@@ -15,10 +15,14 @@
 			"sinks": [
 				{
 					"linkedService": {
-						"referenceName": "SAPECC2ADLS",
+						"referenceName": "adls4sapecc",
 						"type": "LinkedServiceReference"
 					},
-					"name": "sink1"
+					"name": "sink1",
+					"rejectedDataLinkedService": {
+						"referenceName": "adls4sapecc",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [],
@@ -33,14 +37,15 @@
 				"source1 sink(allowSchemaDrift: true,",
 				"     validateSchema: false,",
 				"     format: 'delta',",
+				"     fileSystem: 'demo',",
 				"     mergeSchema: false,",
 				"     autoCompact: false,",
 				"     optimizedWrite: false,",
 				"     vacuum: 0,",
-				"     deletable:false,",
+				"     deletable:true,",
 				"     insertable:true,",
 				"     updateable:false,",
-				"     upsertable:false,",
+				"     upsertable:true,",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
