@@ -1,0 +1,16 @@
+{
+	"name": "SalesDocumentItems",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SAPCDCS4H",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SapOdpResource",
+		"schema": [],
+		"typeProperties": {
+			"context": "ABAP_CDS",
+			"objectName": "CSDSLSDOCITMDX1$F"
+		}
+	}
+}
