@@ -18,7 +18,11 @@
 						"referenceName": "adls4sapecc",
 						"type": "LinkedServiceReference"
 					},
-					"name": "ADSL"
+					"name": "ADSL",
+					"rejectedDataLinkedService": {
+						"referenceName": "adls4sapecc",
+						"type": "LinkedServiceReference"
+					}
 				}
 			],
 			"transformations": [],
@@ -64,7 +68,7 @@
 				"     insertable:true,",
 				"     updateable:true,",
 				"     upsertable:true,",
-				"     keys:['PURCHASEORDERUUID'],",
+				"     keys:['PURCHASEORDER'],",
 				"     umask: 0022,",
 				"     preCommands: [],",
 				"     postCommands: [],",
