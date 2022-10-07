@@ -158,6 +158,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/S4HEPMPO')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SAPCDCS4H",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SapOdpResource",
+				"schema": [],
+				"typeProperties": {
+					"context": "ABAP_CDS",
+					"objectName": "SEPM_IPO$P"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SAPCDCS4H')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SAPECC_FI_AR')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -200,24 +221,88 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/S4HEPMPO')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
+			"name": "[concat(parameters('factoryName'), '/EPMPODelta')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SAPCDCS4H",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SapOdpResource",
-				"schema": [],
+				"type": "MappingDataFlow",
 				"typeProperties": {
-					"context": "ABAP_CDS",
-					"objectName": "SEPM_IPO$P"
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "S4HEPMPO",
+								"type": "DatasetReference"
+							},
+							"name": "S4HEPMPO"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							},
+							"name": "ADLS",
+							"rejectedDataLinkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          PURCHASEORDERUUID as binary,",
+						"          PURCHASEORDER as string,",
+						"          SHORTTEXTGROUPUUID as binary,",
+						"          SUPPLIERUUID as binary,",
+						"          TRANSACTIONCURRENCY as string,",
+						"          GROSSAMOUNTINTRANSACCURRENCY as decimal(19,2),",
+						"          NETAMOUNTINTRANSACTIONCURRENCY as decimal(19,2),",
+						"          TAXAMOUNTINTRANSACTIONCURRENCY as decimal(19,2),",
+						"          PURCHASEORDERLIFECYCLESTATUS as string,",
+						"          PURCHASEORDERAPPROVALSTATUS as string,",
+						"          PURCHASEORDERCONFSTATUS as string,",
+						"          PURCHASEORDERORDERINGSTATUS as string,",
+						"          PURCHASEORDERINVOICINGSTATUS as string,",
+						"          PURCHASEORDEROVERALLSTATUS as string,",
+						"          CREATEDBYUSER as binary,",
+						"          CREATIONDATETIME as decimal(28,7),",
+						"          LASTCHANGEDBYUSER as binary,",
+						"          LASTCHANGEDDATETIME as decimal(28,7)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     staged: true,",
+						"     enableCdc: true,",
+						"     readMode: 'fullAndIncrementalLoad',",
+						"     keys:['PURCHASEORDERUUID'],",
+						"     format: 'sapObject',",
+						"     partitionBy('roundRobin', 2)) ~> S4HEPMPO",
+						"S4HEPMPO sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'demo',",
+						"     folderPath: 'staging',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable:true,",
+						"     insertable:true,",
+						"     updateable:true,",
+						"     upsertable:true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> ADLS"
+					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SAPCDCS4H')]"
+				"[concat(variables('factoryId'), '/datasets/S4HEPMPO')]",
+				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
 			]
 		},
 		{
@@ -365,87 +450,59 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
+			"name": "[concat(parameters('factoryName'), '/EPMPOFullDelta')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "S4HEPMPO",
-								"type": "DatasetReference"
+				"activities": [
+					{
+						"name": "EPMPOFullDelta",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "EPMPODelta",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"S4HEPMPO": {},
+									"ADLS": {}
+								}
 							},
-							"name": "S4HEPMPO"
-						}
-					],
-					"sinks": [
-						{
-							"linkedService": {
-								"referenceName": "adls4sapecc",
-								"type": "LinkedServiceReference"
+							"staging": {
+								"linkedService": {
+									"referenceName": "adls4sapecc",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "demo/staging"
 							},
-							"name": "ADLS",
-							"rejectedDataLinkedService": {
-								"referenceName": "adls4sapecc",
-								"type": "LinkedServiceReference"
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine",
+							"continuationSettings": {
+								"customizedCheckpointKey": "78963da4-2e7e-4085-963d-4df3c85e5e98"
 							}
 						}
-					],
-					"transformations": [],
-					"scriptLines": [
-						"source(output(",
-						"          PURCHASEORDERUUID as binary,",
-						"          PURCHASEORDER as string,",
-						"          SHORTTEXTGROUPUUID as binary,",
-						"          SUPPLIERUUID as binary,",
-						"          TRANSACTIONCURRENCY as string,",
-						"          GROSSAMOUNTINTRANSACCURRENCY as decimal(19,2),",
-						"          NETAMOUNTINTRANSACTIONCURRENCY as decimal(19,2),",
-						"          TAXAMOUNTINTRANSACTIONCURRENCY as decimal(19,2),",
-						"          PURCHASEORDERLIFECYCLESTATUS as string,",
-						"          PURCHASEORDERAPPROVALSTATUS as string,",
-						"          PURCHASEORDERCONFSTATUS as string,",
-						"          PURCHASEORDERORDERINGSTATUS as string,",
-						"          PURCHASEORDERINVOICINGSTATUS as string,",
-						"          PURCHASEORDEROVERALLSTATUS as string,",
-						"          CREATEDBYUSER as binary,",
-						"          CREATIONDATETIME as decimal(28,7),",
-						"          LASTCHANGEDBYUSER as binary,",
-						"          LASTCHANGEDDATETIME as decimal(28,7)",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     staged: true,",
-						"     enableCdc: true,",
-						"     readMode: 'fullAndIncrementalLoad',",
-						"     keys:['PURCHASEORDERUUID'],",
-						"     format: 'sapObject',",
-						"     partitionBy('roundRobin', 2)) ~> S4HEPMPO",
-						"S4HEPMPO sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'delta',",
-						"     fileSystem: 'demo',",
-						"     folderPath: 'staging',",
-						"     mergeSchema: false,",
-						"     autoCompact: false,",
-						"     optimizedWrite: false,",
-						"     vacuum: 0,",
-						"     deletable:true,",
-						"     insertable:true,",
-						"     updateable:true,",
-						"     upsertable:true,",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> ADLS"
-					]
-				}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/S4HEPMPO')]",
+				"[concat(variables('factoryId'), '/dataflows/EPMPODelta')]",
 				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
 			]
 		},
