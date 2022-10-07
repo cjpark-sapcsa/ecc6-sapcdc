@@ -15,11 +15,25 @@
 				},
 				"userProperties": [],
 				"typeProperties": {
+					"dataflow": {
+						"referenceName": "EPMPODelta",
+						"type": "DataFlowReference"
+					},
+					"staging": {
+						"linkedService": {
+							"referenceName": "adls4sapecc",
+							"type": "LinkedServiceReference"
+						},
+						"folderPath": "demo/staging"
+					},
 					"compute": {
 						"coreCount": 8,
 						"computeType": "General"
 					},
-					"traceLevel": "Fine"
+					"traceLevel": "Fine",
+					"continuationSettings": {
+						"customizedCheckpointKey": "78963da4-2e7e-4085-963d-4df3c85e5e98"
+					}
 				}
 			}
 		],
