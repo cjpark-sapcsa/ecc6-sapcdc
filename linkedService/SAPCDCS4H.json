@@ -1,0 +1,22 @@
+{
+	"name": "SAPCDCS4H",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"description": "SAPCDCS4H 2021FPs1",
+		"annotations": [],
+		"type": "SapOdp",
+		"typeProperties": {
+			"clientId": "100",
+			"sncMode": false,
+			"userName": "s4h_ext",
+			"subscriberName": "s4hadfcdc",
+			"server": "4.227.248.152",
+			"systemNumber": "00",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIzZDJmM2M2Ni1iODcwLTRkNjctYTQwZi0yMGU2OWRkZTI2NzMiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "s4hsapcdc",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
