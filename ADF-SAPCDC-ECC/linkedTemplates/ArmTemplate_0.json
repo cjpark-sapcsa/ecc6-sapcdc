@@ -297,7 +297,7 @@
 						"     staged: true,",
 						"     enableCdc: true,",
 						"     readMode: 'fullAndIncrementalLoad',",
-						"     keys:['PURCHASEORDERUUID'],",
+						"     keys:['PURCHASEORDER'],",
 						"     format: 'sapObject',",
 						"     partitionBy('roundRobin', 2)) ~> S4HEPMPO",
 						"S4HEPMPO sink(allowSchemaDrift: true,",
