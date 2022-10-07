@@ -11,6 +11,9 @@
 		"adls4sapecc_accountKey": {
 			"value": ""
 		},
+		"SAPCDCS4H_password": {
+			"value": ""
+		},
 		"SAPCDC2ECC6_properties_typeProperties_clientId": {
 			"value": "100"
 		},
@@ -25,6 +28,18 @@
 		},
 		"adls4sapecc_properties_typeProperties_url": {
 			"value": "https://sapeccqas2adf.dfs.core.windows.net/"
+		},
+		"SAPCDCS4H_properties_typeProperties_clientId": {
+			"value": "100"
+		},
+		"SAPCDCS4H_properties_typeProperties_userName": {
+			"value": "s4h_ext"
+		},
+		"SAPCDCS4H_properties_typeProperties_server": {
+			"value": "4.227.248.152"
+		},
+		"SAPCDCS4H_properties_typeProperties_systemNumber": {
+			"value": "00"
 		},
 		"containerUri": {
 			"value": ""
