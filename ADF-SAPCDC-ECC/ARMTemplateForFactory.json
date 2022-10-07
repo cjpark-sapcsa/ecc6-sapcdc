@@ -477,6 +477,91 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/SAPCDCS4H')]"
 			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "S4HEPMPO",
+								"type": "DatasetReference"
+							},
+							"name": "S4HEPMPO"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							},
+							"name": "ADLS",
+							"rejectedDataLinkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          PURCHASEORDERUUID as binary,",
+						"          PURCHASEORDER as string,",
+						"          SHORTTEXTGROUPUUID as binary,",
+						"          SUPPLIERUUID as binary,",
+						"          TRANSACTIONCURRENCY as string,",
+						"          GROSSAMOUNTINTRANSACCURRENCY as decimal(19,2),",
+						"          NETAMOUNTINTRANSACTIONCURRENCY as decimal(19,2),",
+						"          TAXAMOUNTINTRANSACTIONCURRENCY as decimal(19,2),",
+						"          PURCHASEORDERLIFECYCLESTATUS as string,",
+						"          PURCHASEORDERAPPROVALSTATUS as string,",
+						"          PURCHASEORDERCONFSTATUS as string,",
+						"          PURCHASEORDERORDERINGSTATUS as string,",
+						"          PURCHASEORDERINVOICINGSTATUS as string,",
+						"          PURCHASEORDEROVERALLSTATUS as string,",
+						"          CREATEDBYUSER as binary,",
+						"          CREATIONDATETIME as decimal(28,7),",
+						"          LASTCHANGEDBYUSER as binary,",
+						"          LASTCHANGEDDATETIME as decimal(28,7)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     staged: true,",
+						"     enableCdc: true,",
+						"     readMode: 'fullAndIncrementalLoad',",
+						"     keys:['PURCHASEORDERUUID'],",
+						"     format: 'sapObject',",
+						"     partitionBy('roundRobin', 2)) ~> S4HEPMPO",
+						"S4HEPMPO sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'demo',",
+						"     folderPath: 'staging',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable:true,",
+						"     insertable:true,",
+						"     updateable:true,",
+						"     upsertable:true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> ADLS"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/S4HEPMPO')]",
+				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
+			]
 		}
 	]
 }
