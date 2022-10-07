@@ -12,7 +12,19 @@
 					"name": "salesordernumber"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"linkedService": {
+						"referenceName": "adls4sapecc",
+						"type": "LinkedServiceReference"
+					},
+					"name": "salesordernosADSL",
+					"rejectedDataLinkedService": {
+						"referenceName": "adls4sapecc",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
 			"transformations": [],
 			"scriptLines": [
 				"source(output(",
@@ -27,7 +39,25 @@
 				"     enableCdc: true,",
 				"     readMode: 'fullAndIncrementalLoad',",
 				"     keys:['AUFNR'],",
-				"     format: 'sapObject') ~> salesordernumber"
+				"     format: 'sapObject') ~> salesordernumber",
+				"salesordernumber sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'delta',",
+				"     fileSystem: 'demo',",
+				"     folderPath: 'staging',",
+				"     mergeSchema: false,",
+				"     autoCompact: false,",
+				"     optimizedWrite: false,",
+				"     vacuum: 0,",
+				"     deletable:true,",
+				"     insertable:false,",
+				"     updateable:true,",
+				"     upsertable:true,",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true) ~> salesordernosADSL"
 			]
 		}
 	}
