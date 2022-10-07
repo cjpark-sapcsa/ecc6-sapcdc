@@ -118,13 +118,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/pipeline1')]",
+			"name": "[concat(parameters('factoryName'), '/ZEPMPODelta')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "copyFIAR2ADLS",
+						"name": "ZEPMPODelta",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -137,12 +137,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "dataflowFIAR",
+								"referenceName": "ZSEPMPOdisplay",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"source1": {},
-									"sink1": {}
+									"EPMPODisplay": {},
+									"ADSL": {}
 								}
 							},
 							"staging": {
@@ -150,7 +150,7 @@
 									"referenceName": "adls4sapecc",
 									"type": "LinkedServiceReference"
 								},
-								"folderPath": "demo"
+								"folderPath": "demo/staging/S4HANA"
 							},
 							"compute": {
 								"coreCount": 8,
@@ -158,7 +158,7 @@
 							},
 							"traceLevel": "Fine",
 							"continuationSettings": {
-								"customizedCheckpointKey": "5d5e03cf-3357-4de1-8c6a-44a76b971406"
+								"customizedCheckpointKey": "3840f9a2-b463-4e50-b5e7-24974a0e3040"
 							}
 						}
 					}
@@ -170,7 +170,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/dataflowFIAR')]",
+				"[concat(variables('factoryId'), '/dataflows/ZSEPMPOdisplay')]",
 				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
 			]
 		},
@@ -232,60 +232,24 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/vendersalesfigures')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
+			"name": "[concat(parameters('factoryName'), '/EPDDemoPODelta')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"activities": [
-					{
-						"name": "Vendersalesfigures",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "VenderSalesFigures",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"VenderSalesFigures": {},
-									"ADLSvendersales": {}
-								}
-							},
-							"staging": {
-								"linkedService": {
-									"referenceName": "adls4sapecc",
-									"type": "LinkedServiceReference"
-								},
-								"folderPath": "demo/staging"
-							},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine",
-							"continuationSettings": {
-								"customizedCheckpointKey": "d3c6fdb8-430c-4d17-a472-b7d93ee28226"
-							}
-						}
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
+				"linkedServiceName": {
+					"referenceName": "SAPCDCS4H",
+					"type": "LinkedServiceReference"
 				},
-				"annotations": []
+				"annotations": [],
+				"type": "SapOdpResource",
+				"schema": [],
+				"typeProperties": {
+					"context": "ABAP_CDS",
+					"objectName": "ZSEPMPODISPLAY$E"
+				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/VenderSalesFigures')]",
-				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
+				"[concat(variables('factoryId'), '/linkedServices/SAPCDCS4H')]"
 			]
 		},
 		{
@@ -352,24 +316,24 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/VenderSalesFigures')]",
+			"name": "[concat(parameters('factoryName'), '/SalesDocumentItems')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"linkedServiceName": {
-					"referenceName": "SAPCDC2ECC6",
+					"referenceName": "SAPCDCS4H",
 					"type": "LinkedServiceReference"
 				},
 				"annotations": [],
 				"type": "SapOdpResource",
 				"schema": [],
 				"typeProperties": {
-					"context": "SAPI",
-					"objectName": "0FI_AP_6"
+					"context": "ABAP_CDS",
+					"objectName": "CSDSLSDOCITMDX1$F"
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SAPCDC2ECC6')]"
+				"[concat(variables('factoryId'), '/linkedServices/SAPCDCS4H')]"
 			]
 		},
 		{
@@ -555,7 +519,7 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/VenderSalesFigures')]",
+			"name": "[concat(parameters('factoryName'), '/SalesDocumentItems')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -564,11 +528,10 @@
 					"sources": [
 						{
 							"dataset": {
-								"referenceName": "VenderSalesFigures",
+								"referenceName": "SalesDocumentItems",
 								"type": "DatasetReference"
 							},
-							"name": "VenderSalesFigures",
-							"description": "VenderSalesFigures"
+							"name": "SalesDocumentItems"
 						}
 					],
 					"sinks": [
@@ -577,7 +540,7 @@
 								"referenceName": "adls4sapecc",
 								"type": "LinkedServiceReference"
 							},
-							"name": "ADLSvendersales",
+							"name": "ADLSSalesDocs",
 							"rejectedDataLinkedService": {
 								"referenceName": "adls4sapecc",
 								"type": "LinkedServiceReference"
@@ -587,50 +550,277 @@
 					"transformations": [],
 					"scriptLines": [
 						"source(output(",
-						"          LIFNR as string,",
-						"          BUKRS as string,",
-						"          FISCPER as string,",
-						"          FISCVAR as string,",
-						"          CURTYPE as string,",
+						"          SALESDOCUMENT as string,",
+						"          SALESDOCUMENTITEM as string,",
+						"          SDDOCUMENTCATEGORY as string,",
+						"          SALESDOCUMENTTYPE as string,",
+						"          SALESDOCUMENTITEMCATEGORY as string,",
+						"          ISRETURNSITEM as string,",
+						"          CREATIONDATE as string,",
+						"          CREATIONTIME as string,",
+						"          LASTCHANGEDATE as string,",
+						"          SALESORGANIZATION as string,",
+						"          DISTRIBUTIONCHANNEL as string,",
+						"          DIVISION as string,",
+						"          SALESGROUP as string,",
+						"          SALESOFFICE as string,",
+						"          INTERNATIONALARTICLENUMBER as string,",
+						"          BATCH as string,",
+						"          MATERIAL as string,",
+						"          PRODUCT as string,",
+						"          ORIGINALLYREQUESTEDMATERIAL as string,",
+						"          MATERIALSUBSTITUTIONREASON as string,",
+						"          MATERIALGROUP as string,",
+						"          PRODUCTGROUP as string,",
+						"          ADDITIONALMATERIALGROUP1 as string,",
+						"          ADDITIONALMATERIALGROUP2 as string,",
+						"          ADDITIONALMATERIALGROUP3 as string,",
+						"          ADDITIONALMATERIALGROUP4 as string,",
+						"          ADDITIONALMATERIALGROUP5 as string,",
+						"          SOLDTOPARTY as string,",
+						"          ADDITIONALCUSTOMERGROUP1 as string,",
+						"          ADDITIONALCUSTOMERGROUP2 as string,",
+						"          ADDITIONALCUSTOMERGROUP3 as string,",
+						"          ADDITIONALCUSTOMERGROUP4 as string,",
+						"          ADDITIONALCUSTOMERGROUP5 as string,",
+						"          SHIPTOPARTY as string,",
+						"          PAYERPARTY as string,",
+						"          BILLTOPARTY as string,",
+						"          SDDOCUMENTREASON as string,",
+						"          SALESDOCUMENTDATE as string,",
+						"          ORDERQUANTITY as decimal(20,3),",
+						"          ORDERQUANTITYUNIT as string,",
+						"          TARGETQUANTITY as decimal(20,3),",
+						"          TARGETQUANTITYUNIT as string,",
+						"          TARGETTOBASEQUANTITYDNMNTR as decimal(5,0),",
+						"          TARGETTOBASEQUANTITYNMRTR as decimal(5,0),",
+						"          ORDERTOBASEQUANTITYDNMNTR as decimal(5,0),",
+						"          ORDERTOBASEQUANTITYNMRTR as decimal(5,0),",
+						"          CONFDDELIVQTYINORDERQTYUNIT as decimal(20,3),",
+						"          TARGETDELIVQTYINORDERQTYUNIT as decimal(20,3),",
+						"          CONFDDELIVERYQTYINBASEUNIT as decimal(20,3),",
+						"          BASEUNIT as string,",
+						"          REQUESTEDQUANTITYINBASEUNIT as decimal(20,3),",
+						"          ITEMGROSSWEIGHT as decimal(20,3),",
+						"          ITEMNETWEIGHT as decimal(20,3),",
+						"          ITEMWEIGHTUNIT as string,",
+						"          ITEMVOLUME as decimal(20,3),",
+						"          ITEMVOLUMEUNIT as string,",
+						"          SERVICESRENDEREDDATE as string,",
+						"          SALESDISTRICT as string,",
+						"          CUSTOMERGROUP as string,",
+						"          HDRORDERPROBABILITYINPERCENT as string,",
+						"          ITEMORDERPROBABILITYINPERCENT as string,",
+						"          SALESDOCUMENTRJCNREASON as string,",
+						"          PRICINGDATE as string,",
+						"          EXCHANGERATEDATE as string,",
+						"          PRICEDETNEXCHANGERATE as decimal(22,5),",
+						"          STATISTICALVALUECONTROL as string,",
+						"          NETAMOUNT as decimal(19,2),",
+						"          TRANSACTIONCURRENCY as string,",
+						"          SALESORGANIZATIONCURRENCY as string,",
+						"          NETPRICEAMOUNT as decimal(19,2),",
+						"          NETPRICEQUANTITY as decimal(5,0),",
+						"          NETPRICEQUANTITYUNIT as string,",
+						"          TAXAMOUNT as decimal(19,2),",
+						"          COSTAMOUNT as decimal(19,2),",
+						"          SUBTOTAL1AMOUNT as decimal(19,2),",
+						"          SUBTOTAL2AMOUNT as decimal(19,2),",
+						"          SUBTOTAL3AMOUNT as decimal(19,2),",
+						"          SUBTOTAL4AMOUNT as decimal(19,2),",
+						"          SUBTOTAL5AMOUNT as decimal(19,2),",
+						"          SUBTOTAL6AMOUNT as decimal(19,2),",
+						"          SHIPPINGPOINT as string,",
+						"          SHIPPINGTYPE as string,",
+						"          DELIVERYPRIORITY as string,",
+						"          INVENTORYSPECIALSTOCKTYPE as string,",
+						"          REQUESTEDDELIVERYDATE as string,",
+						"          SHIPPINGCONDITION as string,",
+						"          DELIVERYBLOCKREASON as string,",
+						"          PLANT as string,",
+						"          STORAGELOCATION as string,",
+						"          ROUTE as string,",
+						"          INCOTERMSCLASSIFICATION as string,",
+						"          INCOTERMSVERSION as string,",
+						"          INCOTERMSTRANSFERLOCATION as string,",
+						"          INCOTERMSLOCATION1 as string,",
+						"          INCOTERMSLOCATION2 as string,",
+						"          MINDELIVERYQTYINBASEUNIT as decimal(20,3),",
+						"          UNLIMITEDOVERDELIVERYISALLOWED as string,",
+						"          OVERDELIVTOLRTDLMTRATIOINPCT as decimal(18,1),",
+						"          UNDERDELIVTOLRTDLMTRATIOINPCT as decimal(18,1),",
+						"          PARTIALDELIVERYISALLOWED as string,",
+						"          BINDINGPERIODVALIDITYSTARTDATE as string,",
+						"          BINDINGPERIODVALIDITYENDDATE as string,",
+						"          COMPLETIONRULE as string,",
+						"          OUTLINEAGREEMENTTARGETAMOUNT as decimal(19,2),",
+						"          BILLINGDOCUMENTDATE as string,",
+						"          BILLINGCOMPANYCODE as string,",
+						"          HEADERBILLINGBLOCKREASON as string,",
+						"          ITEMBILLINGBLOCKREASON as string,",
+						"          ITEMISBILLINGRELEVANT as string,",
+						"          FISCALYEAR as string,",
+						"          FISCALPERIOD as string,",
+						"          CUSTOMERACCOUNTASSIGNMENTGROUP as string,",
+						"          EXCHANGERATETYPE as string,",
 						"          CURRENCY as string,",
-						"          UM01S as decimal(19,2),",
-						"          UM01H as decimal(19,2),",
-						"          UM01K as decimal(19,2),",
-						"          UM01U as decimal(19,2),",
-						"          UPDMOD as string",
+						"          FISCALYEARVARIANT as string,",
+						"          BUSINESSAREA as string,",
+						"          PROFITCENTER as string,",
+						"          ORDERID as string,",
+						"          PROFITABILITYSEGMENT as string,",
+						"          PROFITABILITYSEGMENT_2 as string,",
+						"          CONTROLLINGAREA as string,",
+						"          REFERENCESDDOCUMENT as string,",
+						"          REFERENCESDDOCUMENTITEM as string,",
+						"          REFERENCESDDOCUMENTCATEGORY as string,",
+						"          ORIGINSDDOCUMENT as string,",
+						"          ORIGINSDDOCUMENTITEM as string,",
+						"          OVERALLSDPROCESSSTATUS as string,",
+						"          OVERALLTOTALDELIVERYSTATUS as string,",
+						"          OVERALLORDRELTDBILLGSTATUS as string,",
+						"          TOTALCREDITCHECKSTATUS as string,",
+						"          OVERALLSDDOCUMENTREJECTIONSTS as string,",
+						"          OVERALLTOTALSDDOCREFSTATUS as string,",
+						"          OVERALLSDDOCREFERENCESTATUS as string,",
+						"          OVERALLDELIVCONFSTATUS as string,",
+						"          OVERALLDELIVERYSTATUS as string,",
+						"          DELIVERYBLOCKSTATUS as string,",
+						"          BILLINGBLOCKSTATUS as string,",
+						"          TOTALSDDOCREFERENCESTATUS as string,",
+						"          SDDOCREFERENCESTATUS as string,",
+						"          SDDOCUMENTREJECTIONSTATUS as string,",
+						"          ITEMGENERALINCOMPLETIONSTATUS as string,",
+						"          ITEMBILLINGINCOMPLETIONSTATUS as string,",
+						"          PRICINGINCOMPLETIONSTATUS as string,",
+						"          ITEMDELIVERYINCOMPLETIONSTATUS as string,",
+						"          DELIVERYCONFIRMATIONSTATUS as string,",
+						"          ORDERRELATEDBILLINGSTATUS as string,",
+						"          SDPROCESSSTATUS as string,",
+						"          TOTALDELIVERYSTATUS as string,",
+						"          DELIVERYSTATUS as string",
 						"     ),",
 						"     allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     staged: true,",
 						"     enableCdc: true,",
 						"     readMode: 'fullAndIncrementalLoad',",
-						"     keys:['LIFNR'],",
+						"     keys:['SALESDOCUMENT','SALESDOCUMENTITEM'],",
 						"     format: 'sapObject',",
-						"     partitionBy('roundRobin', 2)) ~> VenderSalesFigures",
-						"VenderSalesFigures sink(allowSchemaDrift: true,",
+						"     partitionBy('key',",
+						"          0,",
+						"          SALESDOCUMENT,",
+						"          SALESDOCUMENTITEM",
+						"     )) ~> SalesDocumentItems",
+						"SalesDocumentItems sink(allowSchemaDrift: true,",
 						"     validateSchema: false,",
 						"     format: 'delta',",
 						"     fileSystem: 'demo',",
-						"     folderPath: 'staging',",
+						"     folderPath: 'staging/S4HANA',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable:false,",
+						"     insertable:true,",
+						"     updateable:false,",
+						"     upsertable:false,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> ADLSSalesDocs"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/SalesDocumentItems')]",
+				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ZSEPMPOdisplay')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "EPDDemoPODelta",
+								"type": "DatasetReference"
+							},
+							"name": "EPMPODisplay"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							},
+							"name": "ADSL",
+							"rejectedDataLinkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          PURCHASEORDERUUID as binary,",
+						"          PURCHASEORDER as string,",
+						"          SHORTTEXTGROUPUUID as binary,",
+						"          SUPPLIERUUID as binary,",
+						"          TRANSACTIONCURRENCY as string,",
+						"          GROSSAMOUNTINTRANSACCURRENCY as decimal(17,2),",
+						"          NETAMOUNTINTRANSACTIONCURRENCY as decimal(17,2),",
+						"          TAXAMOUNTINTRANSACTIONCURRENCY as decimal(17,2),",
+						"          PURCHASEORDERLIFECYCLESTATUS as string,",
+						"          PURCHASEORDERAPPROVALSTATUS as string,",
+						"          PURCHASEORDERCONFSTATUS as string,",
+						"          PURCHASEORDERORDERINGSTATUS as string,",
+						"          PURCHASEORDERINVOICINGSTATUS as string,",
+						"          PURCHASEORDEROVERALLSTATUS as string,",
+						"          CREATEDBYUSER as binary,",
+						"          CREATIONDATETIME as decimal(28,7),",
+						"          LASTCHANGEDBYUSER as binary,",
+						"          LASTCHANGEDDATETIME as decimal(28,7)",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     staged: true,",
+						"     enableCdc: true,",
+						"     readMode: 'fullAndIncrementalLoad',",
+						"     keys:['PURCHASEORDERUUID'],",
+						"     format: 'sapObject',",
+						"     partitionBy('roundRobin', 2)) ~> EPMPODisplay",
+						"EPMPODisplay sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'demo',",
+						"     folderPath: 'staging/S4HANA',",
 						"     mergeSchema: false,",
 						"     autoCompact: false,",
 						"     optimizedWrite: false,",
 						"     vacuum: 0,",
 						"     deletable:true,",
-						"     insertable:false,",
+						"     insertable:true,",
 						"     updateable:true,",
 						"     upsertable:true,",
-						"     keys:['LIFNR'],",
+						"     keys:['PURCHASEORDER'],",
 						"     umask: 0022,",
 						"     preCommands: [],",
 						"     postCommands: [],",
 						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> ADLSvendersales"
+						"     skipDuplicateMapOutputs: true) ~> ADSL"
 					]
 				}
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/VenderSalesFigures')]",
+				"[concat(variables('factoryId'), '/datasets/EPDDemoPODelta')]",
 				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
 			]
 		},
@@ -769,120 +959,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/EPDDemoPODelta')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "SAPCDCS4H",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "SapOdpResource",
-				"schema": [],
-				"typeProperties": {
-					"context": "ABAP_CDS",
-					"objectName": "ZSEPMPODISPLAY$E"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SAPCDCS4H')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ZSEPMPOdisplay')]",
-			"type": "Microsoft.DataFactory/factories/dataflows",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "MappingDataFlow",
-				"typeProperties": {
-					"sources": [
-						{
-							"dataset": {
-								"referenceName": "EPDDemoPODelta",
-								"type": "DatasetReference"
-							},
-							"name": "EPMPODisplay"
-						}
-					],
-					"sinks": [
-						{
-							"linkedService": {
-								"referenceName": "adls4sapecc",
-								"type": "LinkedServiceReference"
-							},
-							"name": "ADSL",
-							"rejectedDataLinkedService": {
-								"referenceName": "adls4sapecc",
-								"type": "LinkedServiceReference"
-							}
-						}
-					],
-					"transformations": [],
-					"scriptLines": [
-						"source(output(",
-						"          PURCHASEORDERUUID as binary,",
-						"          PURCHASEORDER as string,",
-						"          SHORTTEXTGROUPUUID as binary,",
-						"          SUPPLIERUUID as binary,",
-						"          TRANSACTIONCURRENCY as string,",
-						"          GROSSAMOUNTINTRANSACCURRENCY as decimal(17,2),",
-						"          NETAMOUNTINTRANSACTIONCURRENCY as decimal(17,2),",
-						"          TAXAMOUNTINTRANSACTIONCURRENCY as decimal(17,2),",
-						"          PURCHASEORDERLIFECYCLESTATUS as string,",
-						"          PURCHASEORDERAPPROVALSTATUS as string,",
-						"          PURCHASEORDERCONFSTATUS as string,",
-						"          PURCHASEORDERORDERINGSTATUS as string,",
-						"          PURCHASEORDERINVOICINGSTATUS as string,",
-						"          PURCHASEORDEROVERALLSTATUS as string,",
-						"          CREATEDBYUSER as binary,",
-						"          CREATIONDATETIME as decimal(28,7),",
-						"          LASTCHANGEDBYUSER as binary,",
-						"          LASTCHANGEDDATETIME as decimal(28,7)",
-						"     ),",
-						"     allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     staged: true,",
-						"     enableCdc: true,",
-						"     readMode: 'fullAndIncrementalLoad',",
-						"     keys:['PURCHASEORDERUUID'],",
-						"     format: 'sapObject',",
-						"     partitionBy('roundRobin', 2)) ~> EPMPODisplay",
-						"EPMPODisplay sink(allowSchemaDrift: true,",
-						"     validateSchema: false,",
-						"     format: 'delta',",
-						"     fileSystem: 'demo',",
-						"     folderPath: 'staging/S4HANA',",
-						"     mergeSchema: false,",
-						"     autoCompact: false,",
-						"     optimizedWrite: false,",
-						"     vacuum: 0,",
-						"     deletable:true,",
-						"     insertable:true,",
-						"     updateable:true,",
-						"     upsertable:true,",
-						"     keys:['PURCHASEORDER'],",
-						"     umask: 0022,",
-						"     preCommands: [],",
-						"     postCommands: [],",
-						"     skipDuplicateMapInputs: true,",
-						"     skipDuplicateMapOutputs: true) ~> ADSL"
-					]
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/EPDDemoPODelta')]",
-				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/ZEPMPODelta')]",
+			"name": "[concat(parameters('factoryName'), '/CSDSLSDOCITMDX')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "ZEPMPODelta",
+						"name": "CSDSLSDOCITMDX",
 						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
@@ -895,12 +978,12 @@
 						"userProperties": [],
 						"typeProperties": {
 							"dataflow": {
-								"referenceName": "ZSEPMPOdisplay",
+								"referenceName": "SalesDocumentItems",
 								"type": "DataFlowReference",
 								"parameters": {},
 								"datasetParameters": {
-									"EPMPODisplay": {},
-									"ADSL": {}
+									"SalesDocumentItems": {},
+									"ADLSSalesDocs": {}
 								}
 							},
 							"staging": {
@@ -916,7 +999,7 @@
 							},
 							"traceLevel": "Fine",
 							"continuationSettings": {
-								"customizedCheckpointKey": "3840f9a2-b463-4e50-b5e7-24974a0e3040"
+								"customizedCheckpointKey": "c6f4ad39-4fd4-4d7e-84a1-bacdf7e7d2e9"
 							}
 						}
 					}
@@ -928,7 +1011,7 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/ZSEPMPOdisplay')]",
+				"[concat(variables('factoryId'), '/dataflows/SalesDocumentItems')]",
 				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
 			]
 		}
