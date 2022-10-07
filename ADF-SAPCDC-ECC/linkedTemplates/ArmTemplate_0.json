@@ -179,6 +179,27 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/S4HSalesOrderNo')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SAPCDCS4H",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SapOdpResource",
+				"schema": [],
+				"typeProperties": {
+					"context": "SAPI",
+					"objectName": "0COORDER_TEXT"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SAPCDCS4H')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SAPECC_FI_AR')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -450,6 +471,76 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/s4hordernos')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "S4HSalesOrderNo",
+								"type": "DatasetReference"
+							},
+							"name": "salesordernumber"
+						}
+					],
+					"sinks": [
+						{
+							"linkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							},
+							"name": "salesordernosADSL",
+							"rejectedDataLinkedService": {
+								"referenceName": "adls4sapecc",
+								"type": "LinkedServiceReference"
+							}
+						}
+					],
+					"transformations": [],
+					"scriptLines": [
+						"source(output(",
+						"          AUFNR as string,",
+						"          AUART as string,",
+						"          KOKRS as string,",
+						"          KTEXT as string",
+						"     ),",
+						"     allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     staged: true,",
+						"     enableCdc: true,",
+						"     readMode: 'fullAndIncrementalLoad',",
+						"     keys:['AUFNR'],",
+						"     format: 'sapObject') ~> salesordernumber",
+						"salesordernumber sink(allowSchemaDrift: true,",
+						"     validateSchema: false,",
+						"     format: 'delta',",
+						"     fileSystem: 'demo',",
+						"     folderPath: 'staging',",
+						"     mergeSchema: false,",
+						"     autoCompact: false,",
+						"     optimizedWrite: false,",
+						"     vacuum: 0,",
+						"     deletable:true,",
+						"     insertable:false,",
+						"     updateable:true,",
+						"     upsertable:true,",
+						"     umask: 0022,",
+						"     preCommands: [],",
+						"     postCommands: [],",
+						"     skipDuplicateMapInputs: true,",
+						"     skipDuplicateMapOutputs: true) ~> salesordernosADSL"
+					]
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/S4HSalesOrderNo')]",
+				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/EPMPOFullDelta')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -560,6 +651,63 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/dataflows/dataflowFIAR')]",
+				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/salesordernumber')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "salesordernumbers",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "s4hordernos",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"salesordernumber": {},
+									"salesordernosADSL": {}
+								}
+							},
+							"staging": {
+								"linkedService": {
+									"referenceName": "adls4sapecc",
+									"type": "LinkedServiceReference"
+								},
+								"folderPath": "demo/staging"
+							},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							},
+							"traceLevel": "Fine",
+							"continuationSettings": {
+								"customizedCheckpointKey": "b73126db-00e7-45b3-ad52-da7344b9dc50"
+							}
+						}
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/s4hordernos')]",
 				"[concat(variables('factoryId'), '/linkedServices/adls4sapecc')]"
 			]
 		},
