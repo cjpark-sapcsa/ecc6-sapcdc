@@ -1,0 +1,21 @@
+{
+	"name": "CDCQASCLNT100",
+	"type": "Microsoft.DataFactory/factories/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "SapOdp",
+		"typeProperties": {
+			"clientId": "100",
+			"language": "en",
+			"sncMode": false,
+			"userName": "i032156",
+			"server": "10.100.1.4",
+			"systemNumber": "00",
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIyNzRlM2VjNi00NjFmLTQxMjMtYTBiNi1mY2M5NjkyMzcyOWYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+		},
+		"connectVia": {
+			"referenceName": "S4HQASCLNT100",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}
