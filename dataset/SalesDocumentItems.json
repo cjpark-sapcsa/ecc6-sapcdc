@@ -2,7 +2,7 @@
 	"name": "SalesDocumentItems",
 	"properties": {
 		"linkedServiceName": {
-			"referenceName": "SAPCDCS4H",
+			"referenceName": "CDCQASCLNT100",
 			"type": "LinkedServiceReference"
 		},
 		"annotations": [],
