@@ -9,9 +9,10 @@
 			"language": "en",
 			"sncMode": false,
 			"userName": "i032156",
+			"subscriberName": "chanpark",
 			"server": "10.100.1.4",
 			"systemNumber": "00",
-			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiIyNzRlM2VjNi00NjFmLTQxMjMtYTBiNi1mY2M5NjkyMzcyOWYiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
+			"encryptedCredential": "eyJDcmVkZW50aWFsSWQiOiI3NDc2MGMyYy1jMGIxLTQ3Y2EtYjNhZC0yOGE1OTVjMjI2MzIiLCJWZXJzaW9uIjoiMi4wIiwiQ2xhc3NUeXBlIjoiTWljcm9zb2Z0LkRhdGFQcm94eS5Db3JlLkludGVyU2VydmljZURhdGFDb250cmFjdC5DcmVkZW50aWFsU1UwNkNZMTQifQ=="
 		},
 		"connectVia": {
 			"referenceName": "S4HQASCLNT100",
