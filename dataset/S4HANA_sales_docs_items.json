@@ -1,0 +1,16 @@
+{
+	"name": "S4HANA_sales_docs_items",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "CDCQASCLNT100",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "SapOdpResource",
+		"schema": [],
+		"typeProperties": {
+			"context": "ABAP_CDS",
+			"objectName": "CSDSLSDOCITMDX1$F"
+		}
+	}
+}
